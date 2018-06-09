@@ -1,0 +1,21 @@
+<!-- Will list out all items currently on todo list -->
+<!-- Have the ability to click a button and change done = true -->
+<!-- if done = true then task should be removed from todo and migrate to done list -->
+{% extends "base.html" %} {% block content %}
+<h1>To Do List</h1>
+<form action="/" method="POST">
+    <input type="text" name="task">
+    <button type="submit">Add Item</button>
+</form>
+<ul style="border: 2px solid black">
+    {% for item in items %}
+    <li>
+        <form action="/" method="POST">
+            <input type="hidden" name="id" value="{{item.id}}" />
+            <input type="submit" class="btn" value="Unmark" />
+        </form>
+
+        {{ item.description }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

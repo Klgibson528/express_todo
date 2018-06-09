@@ -8,11 +8,23 @@
     <title>{{title}}</title>
     {% endblock %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> {% block style %}{% endblock %}
+    <link rel="stylesheet" type="text/css" media="screen" href="base.css" />
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script> {% block style %}{% endblock %}
 </head>
 
 <body>
-    {% block content %}{% endblock %}
+    <nav id="nav">
+        <ul>
+            <li>
+                <a href="/">To Do</a>
+            </li>
+            <li>
+                <a href="/done">Completed</a>
+            </li>
+        </ul>
+    </nav>
+    {% block content %}{% endblock %} {% block script %}{% endblock %}
 </body>
 
 </html>

@@ -1,8 +1,12 @@
+//look at .fetch API for ajax and calling endpoints
 const express = require("express");
 const body_parser = require("body-parser");
 const app = express();
 const pgp = require("pg-promise")({});
-const db = pgp({ database: "todo", user: "postgres" });
+const db = pgp({
+  database: "todo",
+  user: "postgres"
+});
 const nunjucks = require("nunjucks");
 nunjucks.configure("views", {
   autoescape: true,
@@ -11,56 +15,54 @@ nunjucks.configure("views", {
 });
 
 app.use(express.static("public"));
-app.use(body_parser.urlencoded({ extended: false }));
+app.use(
+  body_parser.urlencoded({
+    extended: false
+  })
+);
 
-app.get("/todos", function(req, resp) {
-  resp.render("todos.html");
+app.get("/", function(req, resp) {
+  db.query("SELECT * FROM task").then(function(results) {
+    let items = [];
+    for (var i = 0; i < results.length; i++) {
+      items.push(results[i]);
+    }
+
+    resp.render("todolist.html", {
+      items: items
+    });
+  });
 });
 
-app.post("/todos/add", function(req, resp) {
-  console.log(req.body);
-  var task = req.body;
-  resp.render("index.html");
+app.post("/add", function(req, resp, next) {
+  var task = req.body.task;
+  db.query(
+    "INSERT INTO task (id, description, done) VALUES (default, $1, false)",
+    task
+  );
 });
 
-app.get("/todos/done/:id", function(request, response) {
-  response.send("Projects");
+app.post("/", function(req, resp, next) {
+  var id = req.body.id;
+  console.log(id, "This is the id");
+  // db.query("UPDATE task SET done = true WHERE id = ($1)", id);
+  // resp.redirect("/");
 });
-// //url parameters
-// app.get("/post/:id", function(request, response, next) {
-//   var id = request.params.id;
 
-//   db
-//     .query("SELECT * FROM restaurant WHERE id=$1", [id])
-//     //gives you one results .one("SELECT * FROM restaurant WHERE id=$1", [id])
-//     .then(function(results) {
-//       response.send(results);
-//     })
-//     //not giving error message
-//     .catch(next);
-// });
+app.get("/todos/done", function(req, resp) {
+  let done = req.params.done;
+  let items = [];
 
-// app.get("/form", function(req, resp) {
-//   resp.render("form.html");
-// });
+  for (var i = 0; i < results.length; i++) {
+    items.push(results[i].description);
+  }
+  resp.render("done.html", {
+    items: items
+  });
+});
 
-// // should include some form validation to make sure things are filled out
-// app.post("/submit", function(req, resp) {
-//   console.log(req.body);
-//   resp.render("index.html");
-// });
+//where does this go?
 
-// app.get("/hello", function(request, response) {
-//   var name = request.query.name || "World";
-//   // context is variables you want in your template
-//   var context = {
-//     title: "Hello",
-//     name: name,
-//     friends: [{ name: "Joan" }]
-//   };
-//   response.render("index.html", context);
-// });
-
-app.listen(8008, function() {
-  console.log("Listening on port 8008");
+app.listen(8000, function() {
+  console.log("Listening on port 8000");
 });
