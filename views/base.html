@@ -4,13 +4,11 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"> {% block title %}
-    <title>{{title}}</title>
-    {% endblock %}
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>To-Do List</title>
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="base.css" />
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script> {% block style %}{% endblock %}
+    <link rel="stylesheet" type="text/css" media="screen" href="base.css" /> {% block style %}{% endblock %}
 </head>
 
 <body>
@@ -20,7 +18,7 @@
                 <a href="/">To Do</a>
             </li>
             <li>
-                <a href="/done">Completed</a>
+                <a href="/todos/done">Completed</a>
             </li>
         </ul>
     </nav>

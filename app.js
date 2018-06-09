@@ -23,13 +23,8 @@ app.use(
 
 app.get("/", function(req, resp) {
   db.query("SELECT * FROM task").then(function(results) {
-    let items = [];
-    for (var i = 0; i < results.length; i++) {
-      items.push(results[i]);
-    }
-
     resp.render("todolist.html", {
-      items: items
+      results: results
     });
   });
 });
@@ -40,28 +35,30 @@ app.post("/add", function(req, resp, next) {
     "INSERT INTO task (id, description, done) VALUES (default, $1, false)",
     task
   );
+  resp.redirect("/");
 });
 
 app.post("/", function(req, resp, next) {
   var id = req.body.id;
   console.log(id, "This is the id");
-  // db.query("UPDATE task SET done = true WHERE id = ($1)", id);
-  // resp.redirect("/");
+  db.query("UPDATE task SET done = true WHERE id = ($1)", id);
+  resp.redirect("/");
+});
+
+app.post("/todos/done", function(req, resp, next) {
+  var id = req.body.id;
+  console.log(id, "This is the id");
+  db.query("UPDATE task SET done = false WHERE id = ($1)", id);
+  resp.redirect("/todos/done");
 });
 
 app.get("/todos/done", function(req, resp) {
-  let done = req.params.done;
-  let items = [];
-
-  for (var i = 0; i < results.length; i++) {
-    items.push(results[i].description);
-  }
-  resp.render("done.html", {
-    items: items
+  db.query("SELECT * FROM task").then(function(results) {
+    resp.render("done.html", {
+      results: results
+    });
   });
 });
-
-//where does this go?
 
 app.listen(8000, function() {
   console.log("Listening on port 8000");
