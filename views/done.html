@@ -1,16 +1,22 @@
 <!-- Will list out all completed tasks -->
 <!-- Pull from DB where done = true -->
 <!-- Have button you can click to undo and set done = false -->
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block style %}
+<link rel="stylesheet" type="text/css" media="screen" href="list.css" />{% endblock %} {% block content %}
 <h1>Look at all you've completed!</h1>
 <ul style="border: 2px solid black">
     {% for item in results %}{% if item.done == true %}
     <li>
+        {{ item.description }}
         <form action="/todos/done" method="POST">
             <input type="hidden" name="id" value="{{item.id}}" />
             <input type="submit" class="btn" value="Undo" />
         </form>
-        {{ item.description }}
+        <form action="/todos/done" method="DELETE">
+            <input type="hidden" name="id" value="{{item.id}}" />
+            <input type="submit" class="btn" value="Delete" />
+        </form>
+
     </li>
     {% endif %} {% endfor %}
 </ul>

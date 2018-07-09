@@ -1,21 +1,27 @@
 <!-- Will list out all items currently on todo list -->
 <!-- Have the ability to click a button and change done = true -->
 <!-- if done = true then task should be removed from todo and migrate to done list -->
-{% extends "base.html" %} {% block content %}
-<h1>To Do List</h1>
-<form action="/add" method="POST">
-    <input type="text" name="task">
-    <input type="submit" class="btn" value="Add Item">
-</form>
-<ul style="border: 2px solid black">
-    {% for item in results %} {% if item.done == false %}
-    <li>
-        <form action="/" method="POST">
-            <input type="hidden" name="id" value="{{item.id}}" />
-            <input type="submit" class="btn" value="Done" />
-        </form>
+{% extends "base.html" %} {% block style %}
+<link rel="stylesheet" type="text/css" media="screen" href="list.css" />{% endblock %}{% block content %}
+<div class="container text-center list">
+    <h1>To Do List</h1>
+    <form action="/add" method="POST">
+        <input type="text" name="task">
+        <input type="submit" class="btn btn-sm" value="Add Item">
+    </form>
+    <div class="container list-items">
 
-        {{ item.description }}</li>
-    {% else %} {% endif %} {% endfor %}
-</ul>
-{% endblock %}
+        {% for item in results %} {% if item.done == false %}
+
+        <li>
+            <div class="float">
+                {{ item.description }}
+                <form action="/" method="POST">
+                    <input type="hidden" name="id" value="{{item.id}}" class="end" />
+                    <input type="submit" class="btn-sm button" value="Done" class="end" />
+                </form>
+            </div>
+        </li>
+        {% else %} {% endif %} {% endfor %} {% endblock %}
+    </div>
+</div>

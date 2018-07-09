@@ -1,0 +1,28 @@
+.list {
+    width: 400px;
+}
+
+.list-items {
+    height: 500px;
+    width: 80%;
+    margin-top: 10px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+}
+
+li {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 10px;
+}
+
+.float {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 5px;
+}

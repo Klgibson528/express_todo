@@ -1,14 +1,15 @@
 nav {
   display: flex;
   justify-content: center;
+  align-items: center;
   max-width: 100%;
-  border: 3px solid black;
+  margin-bottom: 20px;
 }
 
-nav ul {
+.nav-items {
   display: flex;
   justify-content: center;
-  list-style: none;
+  align-items: center;
 }
 
 nav li {
@@ -16,6 +17,11 @@ nav li {
 }
 
 nav a {
+  text-decoration: none;
+  color: white;
+}
+
+nav a:hover {
   text-decoration: none;
   color: black;
 }

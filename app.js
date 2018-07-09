@@ -29,6 +29,12 @@ app.get("/", function(req, resp) {
   });
 });
 
+app.post("/", function(req, resp, next) {
+  var id = req.body.id;
+  db.query("UPDATE task SET done = true WHERE id = ($1)", id);
+  resp.redirect("/");
+});
+
 app.post("/add", function(req, resp, next) {
   var task = req.body.task;
   db.query(
@@ -38,26 +44,28 @@ app.post("/add", function(req, resp, next) {
   resp.redirect("/");
 });
 
-app.post("/", function(req, resp, next) {
-  var id = req.body.id;
-  console.log(id, "This is the id");
-  db.query("UPDATE task SET done = true WHERE id = ($1)", id);
-  resp.redirect("/");
-});
-
-app.post("/todos/done", function(req, resp, next) {
-  var id = req.body.id;
-  console.log(id, "This is the id");
-  db.query("UPDATE task SET done = false WHERE id = ($1)", id);
-  resp.redirect("/todos/done");
-});
-
 app.get("/todos/done", function(req, resp) {
   db.query("SELECT * FROM task").then(function(results) {
     resp.render("done.html", {
       results: results
     });
   });
+});
+
+app.post("/todos/done", function(req, resp, next) {
+  debugger;
+  var id = req.body.id;
+  console.log(id, "This is the id");
+  db.query("UPDATE task SET done = false WHERE id = ($1)", id);
+  resp.redirect("/todos/done");
+});
+
+app.delete("/todos/done", function(req, resp, next) {
+  debugger;
+  var id = req.body.id;
+  console.log(id, "This is the id");
+  db.query("DELETE FROM task WHERE id = ($1)", id);
+  resp.redirect("/todos/done");
 });
 
 app.listen(8000, function() {
