@@ -60,7 +60,7 @@ app.post("/todos/done", function(req, resp, next) {
   resp.redirect("/todos/done");
 });
 
-app.delete("/todos/done", function(req, resp, next) {
+app.delete("/todos/:id", function(req, resp, next) {
   debugger;
   var id = req.body.id;
   console.log(id, "This is the id");
