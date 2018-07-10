@@ -9,11 +9,23 @@ const db = pgp({
 });
 
 const { Client } = require("pg");
-const connectionString = "postgres://szqgrhodocokax:de945ccf9088066129b0ceff58e415b7900c4a7a9a14658ee1fef755bb6f0db7@ec2-54-163-235-56.compute-1.amazonaws.com:5432/d69ac3i7c7jdn1"
+const connectionString =
+  "postgres://szqgrhodocokax:de945ccf9088066129b0ceff58e415b7900c4a7a9a14658ee1fef755bb6f0db7@ec2-54-163-235-56.compute-1.amazonaws.com:5432/d69ac3i7c7jdn1";
 const client = new Client({
   connectionString,
   ssl: true
 });
+
+pg.connect(
+  connectionString,
+  function(err, client, done) {
+    client.query("SELECT * FROM task", function(err, result) {
+      done();
+      if (err) return console.error(err);
+      console.log(result.rows);
+    });
+  }
+);
 
 client.connect();
 
