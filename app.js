@@ -3,6 +3,17 @@ const express = require("express");
 const body_parser = require("body-parser");
 const app = express();
 const pgp = require("pg-promise")({});
+
+const knex = require("knex")({
+  client: "pg",
+  version: "7.2",
+  connection: {
+    host: "10.0.0.24",
+    user: "postgres",
+    password: "",
+    database: "todo"
+  }
+});
 const db = pgp({
   database: "todo",
   user: "postgres"
