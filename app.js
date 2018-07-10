@@ -2,7 +2,6 @@
 const express = require("express");
 const body_parser = require("body-parser");
 const app = express();
-const pg = require("pg");
 const pgp = require("pg-promise")({});
 const db = pgp({
   database: "todo",
@@ -17,7 +16,7 @@ const client = new Client({
   ssl: true
 });
 
-db.connect(
+client.connect(
   connectionString,
   function(err, client, done) {
     client.query("SELECT * FROM task", function(err, result) {
@@ -28,7 +27,7 @@ db.connect(
   }
 );
 
-client.connect();
+
 
 const nunjucks = require("nunjucks");
 nunjucks.configure("views", {
