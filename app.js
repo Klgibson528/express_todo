@@ -16,15 +16,15 @@ const client = new Client({
   ssl: true
 });
 
-client.connect(
-  function(err, client) {
-    console.log(err)
-    client.query("SELECT * FROM task", function(err, result) {
-      if (err) return console.error(err);
-      console.log(result.rows);
-    });
+client.connect();
+
+client.query('SELECT * FROM task;', (err, res) => {
+  if (err) throw err;
+  for (let row of res.rows) {
+    console.log(JSON.stringify(row));
   }
-);
+  client.end();
+});
 
 
 
