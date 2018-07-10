@@ -17,7 +17,7 @@ const client = new Client({
   ssl: true
 });
 
-pg.connect(
+db.connect(
   connectionString,
   function(err, client, done) {
     client.query("SELECT * FROM task", function(err, result) {
