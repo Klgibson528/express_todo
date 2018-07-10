@@ -9,16 +9,14 @@ const db = pgp({
 });
 
 const { Client } = require("pg");
-const connectionString =
-  "postgres://szqgrhodocokax:de945ccf9088066129b0ceff58e415b7900c4a7a9a14658ee1fef755bb6f0db7@ec2-54-163-235-56.compute-1.amazonaws.com:5432/d69ac3i7c7jdn1";
 const client = new Client({
-  connectionString,
+  connectionString:"postgres://szqgrhodocokax:de945ccf9088066129b0ceff58e415b7900c4a7a9a14658ee1fef755bb6f0db7@ec2-54-163-235-56.compute-1.amazonaws.com:5432/d69ac3i7c7jdn1",
   ssl: true
 });
 
 client.connect();
 
-client.query('SELECT * FROM todo;', (err, res) => {
+client.query('SELECT * FROM todo', (err, res) => {
   if (err) throw err;
   for (let row of res.rows) {
     console.log(JSON.stringify(row));
