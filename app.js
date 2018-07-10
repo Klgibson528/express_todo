@@ -75,6 +75,6 @@ app.post("/todos/delete", function(req, resp, next) {
   resp.redirect("/todos/done");
 });
 
-app.listen(8000, function() {
+app.listen(process.env.PORT || 8000, function() {
   console.log("Listening on port 8000");
 });
