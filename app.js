@@ -69,7 +69,7 @@ app.post("/todos/done", function(req, resp, next) {
   resp.redirect("/todos/done");
 });
 
-app.pos("/todos/delete", function(req, resp, next) {
+app.post("/todos/delete", function(req, resp, next) {
   var id = req.body.id;
   db.query("DELETE FROM task WHERE id = ($1)", id);
   resp.redirect("/todos/done");
