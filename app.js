@@ -17,10 +17,9 @@ const client = new Client({
 });
 
 client.connect(
-  function(err, client, done) {
+  function(err, client) {
     console.log(err)
     client.query("SELECT * FROM task", function(err, result) {
-      done();
       if (err) return console.error(err);
       console.log(result.rows);
     });
