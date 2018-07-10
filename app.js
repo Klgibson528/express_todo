@@ -53,17 +53,13 @@ app.get("/todos/done", function(req, resp) {
 });
 
 app.post("/todos/done", function(req, resp, next) {
-  debugger;
   var id = req.body.id;
-  console.log(id, "This is the id");
   db.query("UPDATE task SET done = false WHERE id = ($1)", id);
   resp.redirect("/todos/done");
 });
 
-app.delete("/todos/:id", function(req, resp, next) {
-  debugger;
+app.post("/todos/delete", function(req, resp, next) {
   var id = req.body.id;
-  console.log(id, "This is the id");
   db.query("DELETE FROM task WHERE id = ($1)", id);
   resp.redirect("/todos/done");
 });

@@ -1,5 +1,5 @@
 .list {
-    width: 400px;
+    max-width: 400px;
 }
 
 .list-items {
@@ -36,6 +36,6 @@ li {
 .item {
     display: flex;
     justify-content: flex-start;
-    width: 40%;
+    width: 45%;
     word-break: break-all;
 }

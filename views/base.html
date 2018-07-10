@@ -14,19 +14,21 @@
 </head>
 
 <body>
-    <nav id="nav" class="navbar-dark bg-primary">
-        <div class="nav-items">
+    <div class="container">
+        <nav id="nav" class="navbar-dark bg-primary">
+            <div class="nav-items">
 
-            <li>
-                <a href="/">To Do</a>
-            </li>
-            <li>
-                <a href="/todos/done">Completed</a>
-            </li>
+                <li>
+                    <a href="/">To Do</a>
+                </li>
+                <li>
+                    <a href="/todos/done">Completed</a>
+                </li>
 
-        </div>
-    </nav>
-    {% block content %}{% endblock %} {% block script %}{% endblock %}
+            </div>
+        </nav>
+        {% block content %}{% endblock %} {% block script %}{% endblock %}
+    </div>
 </body>
 
 </html>
