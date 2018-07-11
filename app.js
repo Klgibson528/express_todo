@@ -8,23 +8,40 @@ const db = pgp({
   user: "postgres"
 });
 
-const { Client } = require("pg");
-const client = new Client({
-  connectionString:"postgres://szqgrhodocokax:de945ccf9088066129b0ceff58e415b7900c4a7a9a14658ee1fef755bb6f0db7@ec2-54-163-235-56.compute-1.amazonaws.com:5432/d69ac3i7c7jdn1",
+const { Pool } = require("pg");
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
   ssl: true
 });
 
-client.connect();
-
-client.query('SELECT * FROM todo', (err, res) => {
-  if (err) throw err;
-  for (let row of res.rows) {
-    console.log(JSON.stringify(row));
+app.get("/db", async (req, res) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query("SELECT * FROM task");
+    res.render("pages/db", result);
+    client.release();
+  } catch (err) {
+    console.error(err);
+    res.send("Error " + err);
   }
-  client.end();
 });
 
+// const { Client } = require("pg");
+// const client = new Client({
+//   connectionString:
+//     "postgres://szqgrhodocokax:de945ccf9088066129b0ceff58e415b7900c4a7a9a14658ee1fef755bb6f0db7@ec2-54-163-235-56.compute-1.amazonaws.com:5432/d69ac3i7c7jdn1",
+//   ssl: true
+// });
 
+// client.connect();
+
+// client.query("SELECT * FROM task", (err, res) => {
+//   if (err) throw err;
+//   for (let row of res.rows) {
+//     console.log(JSON.stringify(row));
+//   }
+//   client.end();
+// });
 
 const nunjucks = require("nunjucks");
 nunjucks.configure("views", {
