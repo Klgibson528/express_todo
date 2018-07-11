@@ -3,7 +3,6 @@ const express = require("express");
 const body_parser = require("body-parser");
 const app = express();
 const pgp = require("pg-promise")({});
-
 const db = pgp(
   process.env.DATABASE_URL || { database: "todo", user: "postgres" }
 );
