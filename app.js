@@ -10,7 +10,8 @@ const db = pgp({
 
 const { Pool } = require("pg");
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString:
+    "postgres://szqgrhodocokax:de945ccf9088066129b0ceff58e415b7900c4a7a9a14658ee1fef755bb6f0db7@ec2-54-163-235-56.compute-1.amazonaws.com:5432/d69ac3i7c7jdn1",
   ssl: true
 });
 
