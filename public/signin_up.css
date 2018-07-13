@@ -2,7 +2,7 @@ h1 {
     font-size: 4rem;
 }
 
-form {
+.box {
     max-width: 400px;
     margin: 0 auto
 }
@@ -10,5 +10,6 @@ form {
 .submit {
     display: flex;
     justify-content: space-between;
-    align-items: center
+    align-items: center;
+    margin-bottom: 10px;
 }

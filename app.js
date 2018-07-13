@@ -3,6 +3,8 @@ const express = require("express");
 const body_parser = require("body-parser");
 const app = express();
 const pgp = require("pg-promise")({});
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
 const db = pgp(
   process.env.DATABASE_URL || { database: "todo", user: "postgres" }
 );
@@ -21,7 +23,8 @@ app.use(
   })
 );
 
-app.get("/", function(req, resp) {
+app.get("/signin", function(req, resp) {
+  
   db.query("SELECT * FROM task WHERE userid = ($1)", userid).then(function(
     results
   ) {
@@ -31,13 +34,14 @@ app.get("/", function(req, resp) {
   });
 });
 
-app.get("/signin", function(req, res, next) {
-  res.render("signin.html");
-});
-
 app.get("/signup", function(req, res, next) {
   res.render("signup.html");
 });
+
+app.get("/", function(req, res, next) {
+  res.render("signin.html");
+});
+
 
 app.post("/", function(req, resp, next) {
   var id = req.body.id;
@@ -62,12 +66,13 @@ app.post("/add", function(req, resp, next) {
 app.post("/new_user", function(req, resp, next) {
   var email = req.body.inputEmail;
   var password = req.body.inputPassword;
+  var hash = bcrypt.hashSync(password, saltRounds);
   var fname = req.body.inputFName;
   var lname = req.body.inputLName;
-  console.log(email, password, lname, fname);
+  console.log(email, hash, lname, fname);
   db.query(
     "INSERT INTO users (userid, email, password, last_name, first_name) VALUES (default, $1, $2, $3, $4)",
-    [email, password, lname, fname]
+    [email, hash, lname, fname]
   );
   resp.redirect("/");
 });
@@ -98,6 +103,6 @@ app.post("/todos/delete", function(req, resp, next) {
   resp.redirect("/todos/done");
 });
 
-app.listen(process.env.PORT || 9000, function() {
-  console.log("Listening on port 9000");
+app.listen(process.env.PORT || 8000, function() {
+  console.log("Listening on port 8000");
 });
