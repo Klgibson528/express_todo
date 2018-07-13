@@ -1,0 +1,14 @@
+h1 {
+    font-size: 4rem;
+}
+
+form {
+    max-width: 400px;
+    margin: 0 auto
+}
+
+.submit {
+    display: flex;
+    justify-content: space-between;
+    align-items: center
+}
