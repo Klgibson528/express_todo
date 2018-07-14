@@ -53,12 +53,14 @@ app.get("/", function(req, res, next) {
 
 app.post("/update", function(req, resp, next) {
   var id = req.body.id;
+  var userid = req.body.userid
+  console.log(id, userid)
   db.query(
-    "UPDATE task SET done = true WHERE id = ($1) userid = ($2)",
+    "UPDATE task SET done = true WHERE id = ($1) AND userid = ($2)",
     id,
     userid
   );
-  resp.render("todolist.html");
+  // resp.render("todolist.html");
 });
 
 app.post("/add", function(req, resp, next) {

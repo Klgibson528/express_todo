@@ -18,6 +18,7 @@
                 {{ item.description }}
                 <form action="/update" method="POST">
                     <input type="hidden" name="id" value="{{item.id}}" class="end" />
+                    <input type="hidden" name="userid" value="{{item.userid}}" class="end" />
                     <input type="submit" class="btn-sm button" value="Done" class="end" />
                 </form>
             </div>
