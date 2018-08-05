@@ -5,11 +5,19 @@ const app = express();
 const pgp = require("pg-promise")({});
 const bcrypt = require("bcrypt");
 const expressValidator = require("express-validator");
+const cookieParser = require("cookie-parser");
+
+ 
+//Authentication Packages
+const session = require("express-session");
+const passport = require("passport");
+
 const saltRounds = 10;
 const db = pgp(
   process.env.DATABASE_URL || { database: "todo", user: "postgres" }
 );
 
+// Templating
 const nunjucks = require("nunjucks");
 nunjucks.configure("views", {
   autoescape: true,
@@ -17,6 +25,9 @@ nunjucks.configure("views", {
   noCache: true
 });
 
+require("dotenv").config();
+
+//Middleware
 app.use(express.static("public"));
 app.use(
   body_parser.urlencoded({
@@ -24,100 +35,117 @@ app.use(
   })
 );
 app.use(expressValidator());
+app.use(
+  session({
+    store: new (require("connect-pg-simple")(session))(),
+    // change to env var for production
+    secret: "fhyfyygbjhljgyfyhfyhf",
+    resave: false,
+    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }, // 30 days
+    //if true, cookie is created for anyone visiting page, not just those logged in
+    saveUninitialized: false
+    // cookie: { secure: true }
+  })
+);
+app.use(require("cookie-parser")());
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get("/", function(req, res, next) {
+  res.render("signin.html");
+});
 
 app.post("/", function(req, resp) {
-  var email = req.body.InputEmail1;
-
-  db.query("SELECT userid FROM users WHERE email = ($1)", email).then(function(
-    results
-  ) {
-    userid = results[0].userid;
-    console.log(userid);
-    db.query("SELECT * FROM task WHERE userid = ($1)", userid).then(function(
-      results
-    ) {
-      resp.render("todolist.html", {
-        results: results
-      });
-    });
-  });
+  var email = req.body.inputEmail1;
+  var password = req.body.inputPassword1;
+  db.query("SELECT password FROM users WHERE email = ($1)", email).then(
+    function(results) {
+      var hash = results[0].password;
+      if (bcrypt.compareSync(password, hash)) {
+        db.query(
+          "SELECT userid FROM users WHERE email = ($1) AND password = ($2)",
+          [email, hash]
+        )
+          .then(function(results) {
+            console.log(results);
+            userid = results[0].userid;
+            console.log(userid);
+            db.query("SELECT * FROM task WHERE userid = ($1)", userid)
+              .then(function(results) {
+                resp.render("todolist.html", {
+                  results: results
+                });
+              })
+              .catch(function(err) {
+                resp.send("ERROR 1");
+              });
+          })
+          .catch(function(err) {
+            resp.send("ERROR 2");
+          });
+      } else {
+        console.log("false");
+      }
+    }
+  );
 });
 
 app.get("/signup", function(req, res, next) {
   res.render("signup.html");
 });
 
-app.get("/", function(req, res, next) {
-  res.render("signin.html");
+app.post("/signup", function(req, resp, next) {
+  var email = req.body.inputEmail;
+  var password = req.body.inputPassword;
+  var fname = req.body.inputFName;
+  var lname = req.body.inputLName;
+
+  console.log(email, lname, fname);
+
+  bcrypt.hash(password, saltRounds, function(err, hash) {
+    db.query(
+      "INSERT INTO users (email, password, last_name, first_name) VALUES (($1), ($2), ($3), ($4)) RETURNING userid",
+      [email, hash, lname, fname]
+    ).then(function(results) {
+      userid = results[0].userid;
+      req.login(userid, function(err) {
+        resp.redirect("/todos");
+      });
+    });
+  });
 });
 
-app.post("/update", function(req, resp, next) {
+passport.serializeUser(function(userid, done) {
+  done(null, userid);
+});
+
+passport.deserializeUser(function(userid, done) {
+  done(null, userid);
+});
+
+app.get("/todos", function(req, resp, next) {
+  console.log(req.user);
+  console.log(req.isAuthenticated());
+  resp.render("todolist.html");
+});
+
+app.post("/todos", function(req, resp, next) {
   var id = req.body.id;
-  var userid = req.body.userid
-  console.log(id, userid)
+  var userid = req.body.userid;
+  console.log(id, userid);
   db.query(
     "UPDATE task SET done = true WHERE id = ($1) AND userid = ($2)",
     id,
     userid
   );
-  // resp.render("todolist.html");
+  resp.render("todolist.html");
 });
 
-app.post("/add", function(req, resp, next) {
+app.post("/todos/add", function(req, resp, next) {
   var task = req.body.task;
   db.query(
     "INSERT INTO task (userid, id, description, done) VALUES ($1, default, $2, false)",
-    userid,
-    task
-  );
-  resp.redirect("/");
-});
-
-app.post("/new_user", function(req, resp, next) {
-  var email = req.body.inputEmail;
-  var password = req.body.inputPassword;
-  var hash = bcrypt.hashSync(password, saltRounds);
-  var fname = req.body.inputFName;
-  var lname = req.body.inputLName;
-
-  req
-    .checkBody("email", "The email you entered is invalid, please try again.")
-    .isEmail();
-  req
-    .checkBody(
-      "email",
-      "Email address must be between 4-100 characters long, please try again."
-    )
-    .len(4, 100);
-  req
-    .checkBody(
-      "inputPassword",
-      "Password must be between 8-100 characters long."
-    )
-    .len(8, 100);
-  req
-    .checkBody(
-      "inputPassword",
-      "Password must include one lowercase character, one uppercase character, a number, and a special character."
-    )
-    .matches(
-      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.* )(?=.*[^a-zA-Z0-9]).{8,}$/,
-      "i"
-    );
-  req
-    .checkBody(
-      "inputPassword2",
-      "Password must be between 8-100 characters long."
-    )
-    .len(8, 100);
-  req
-    .checkBody("inputPassword2", "Passwords do not match, please try again.")
-    .equals(req.body.inputPassword);
-
-  console.log(email, hash, lname, fname);
-  db.query(
-    "INSERT INTO users (userid, email, password, last_name, first_name) VALUES (default, $1, $2, $3, $4)",
-    [email, hash, lname, fname]
+    [userid, task]
   );
   resp.redirect("/");
 });
